@@ -1,7 +1,9 @@
-# dependency-cruiser command line interface
+# dependency-cruiser command line interface / dependency-cruiser 命令行工具
 
 The command line interface is a straightforward affair - you pass it a bunch of
 files, and dependency-cruiser will start cruising them:
+
+命令行方式使用起来非常简单，你可以给一些文件，然后用 dependency-cruise 将开始检测它们：
 
 ```sh
 depcruise [options] <files-or-directories>
@@ -11,9 +13,14 @@ Below you'll find a list of command line options you can use, divided into ones 
 are only available as options on the command line and into those also
 available in dependency-cruiser configurations.
 
-## Contents
+在下面，你可以找到可以使用的命令行选项列表，分为以下几种：
 
-### Command line only options
+- 仅作为命令行上的选项可用，
+- 同时可以在 dependency-cruiser 配置中可用。
+
+## Contents / 目录
+
+### Command line only options / 仅可作为命令行选项使用的参数
 
 1. [arguments - files and/ or directories](#arguments---files-and-or-directories)
 1. [`--output-type`: specify the output format](#--output-type-specify-the-output-format)
@@ -22,70 +29,93 @@ available in dependency-cruiser configurations.
 1. [`--info`: show what alt-js are supported](#--info-showing-what-alt-js-are-supported)
 1. [`--help`/ no parameters: get help](#--help--no-parameters)
 
-### Options also available in dependency-cruiser configurations
+1. [参数 - 文件或文件夹](#arguments---files-and-or-directories)
+2. [`--output-type`: 定义输出格式](#--output-type-specify-the-output-format)
+3. [`--config`/ `--validate`: 要使用的配置规则或选项](#--config---validate)
+4. [`--init`](#--init)
+5. [`--info`: 显示支持哪些 alt-js 语言](#--info-showing-what-alt-js-are-supported)
+6. [`--help`/ 或者不加任何参数: 获得帮助](#--help--no-parameters)
 
-1. [`--do-not-follow`: don't cruise modules adhering to this pattern any further](#--do-not-follow-dont-cruise-modules-adhering-to-this-pattern-any-further)
-1. [`--include-only`: only include modules satisfying a pattern](#--include-only-only-include-modules-satisfying-a-pattern)
-1. [`--focus`: show modules and their direct neighbours](#--focus-show-modules-and-their-direct-neighbours)
-1. [`--collapse`: summarize to folder depth or pattern](#--collapse-summarize-to-folder-depth-or-pattern)
-1. [`--exclude`: exclude dependencies from being cruised](#--exclude-exclude-dependencies-from-being-cruised)
+### Options also available in dependency-cruiser configurations / 能同时在 dependency-cruiser 配置中使用的选项
+
+1. [`--do-not-follow`: don't cruise modules adhering to this pattern any further / 不要继续遵循该模式的模块](#--do-not-follow-dont-cruise-modules-adhering-to-this-pattern-any-further)
+1. [`--include-only`: only include modules satisfying a pattern / 仅包含满足模式的模块](#--include-only-only-include-modules-satisfying-a-pattern)
+1. [`--focus`: show modules and their direct neighbours / 显示模块及其直接邻居](#--focus-show-modules-and-their-direct-neighbours)
+1. [`--collapse`: summarize to folder depth or pattern / 汇总到文件夹的深度或样式](#--collapse-summarize-to-folder-depth-or-pattern)
+1. [`--exclude`: exclude dependencies from being cruised / 从依赖中排除依赖](#--exclude-exclude-dependencies-from-being-cruised)
 1. [`--max-depth`](#--max-depth)
-1. [`--progress`: get feedback on what dependency-cruiser is doing while it's running](#--progress-get-feedbakc-on-what-dependency-cruiser-is-doing-while-its-running)
-1. [`--prefix` prefixing links](#--prefix-prefixing-links)
-1. [`--module-systems`](#--module-systems)
+1. [`--progress`: get feedback on what dependency-cruiser is doing while it's running / 获得有关 dependency-cruiser 运行时正在执行的操作的反馈](#--progress-get-feedbakc-on-what-dependency-cruiser-is-doing-while-its-running)
+1. [`--prefix` prefixing links / 前缀链接](#--prefix-prefixing-links)
+1. [`--module-systems` / 模块系统](#--module-systems)
 1. [`--ts-pre-compilation-deps` (typescript only)](#--ts-pre-compilation-deps-typescript-only)
-1. [`--ts-config`: use a typescript configuration file ('project')](#--ts-config-use-a-typescript-configuration-file-project)
-1. [`--webpack-config`: use (the resolution options of) a webpack configuration`](#--webpack-config-use-the-resolution-options-of-a-webpack-configuration)
+1. [`--ts-config`: use a typescript configuration file ('project') / 使用的 typescript 配置文件（“项目”）](#--ts-config-use-a-typescript-configuration-file-project)
+1. [`--webpack-config`: use (the resolution options of) a webpack configuration` / 使用的 Webpack 配置（含有 resolution 选项的）](#--webpack-config-use-the-resolution-options-of-a-webpack-configuration)
 1. [`--preserve-symlinks`](#--preserve-symlinks)
 
-### Standalone formatting of dependency graphs: [depcruise-fmt](#depcruise-fmt)
+### Standalone formatting of dependency graphs: [depcruise-fmt](#depcruise-fmt) / 依赖图的独立格式：[depcruise-fmt](#depcruise-fmt)
 
-### Make GraphViz output more interactive: [depcruise-wrap-stream-in-html](#depcruise-wrap-stream-in-html)
+### Make GraphViz output more interactive: [depcruise-wrap-stream-in-html](#depcruise-wrap-stream-in-html) / 使 GraphViz 输出更具交互性：[depcruise-wrap-stream-in-html](#depcruise-wrap-stream-in-html)
 
-## Command line only options
+## Command line only options / 仅适用于命令行的选项
 
-### arguments - files and/ or directories
+### arguments - files and/ or directories / 参数 - 文件或文件夹
 
 You can pass a bunch of files, directories and 'glob' patterns.
 dependency-cruiser will
+
+你可以传递一堆文件，目录和 “glob” 匹配模式，使得 dependency-cruiser 可以做以下事情：
 
 - resolve the glob patterns (if any) to files and directories
 - scan directories (if any) for files with supported extensions
 - add the passed files to that
   ... and start the cruise with the files thus found.
 
-#### Cruising multiple files and directories in one go
+- 将 glob 模式（如果有）解析为文件和目录
+- 扫描目录（如果有）以查找具有受支持的扩展名的文件
+- 将传递的文件添加到该文件，然后使用找到的文件开始依赖分析。
+
+#### Cruising multiple files and directories in one go / 一次分析多个文件和目录
 
 Just pass them as arguments. This, e.g. will cruise every file in the folders
 src, test and lib (recursively) + the file called index.ts in the root.
+
+只需将它们作为参数传递即可。例如下面的命令将递归分析 src, test, lib 文件夹中的每个文件，以及根目录下的 index.ts 文件。
 
 ```sh
 depcruise --output-type dot src test lib index.ts
 ```
 
-#### passing globs as parameters
+#### passing globs as parameters / 传递 glob 作为参数
 
 dependency-cruiser uses [node-glob](https://github.com/isaacs/node-glob) to
 make sure globs work the same across platforms. It cannot prevent the
 environment from expanding globs before it can process it, however.
 
+dependency-cruiser 使用 [node-glob](https://github.com/isaacs/node-glob) 以确保 glob 匹配在各个平台上均相同。然而，它不能避免解析不了某个环境自己扩展的 glob 匹配。
+
 As each environment interprets globs slightly differently, a pattern
 like `packages/**/src/**/*.js` will yield different results.
+
+由于每个环境对 glob 的解释略有不同，因此像 `packages/**/src/**/*.js` 匹配会产生不同的结果。
 
 To make sure glob expansion works _exactly_ the same across
 platforms slap some quotes around them, so it's not the environment
 (/ shell) expanding the glob, but dependency-cruiser itself:
 
+为了确保 glob 扩展在所有平台上解析的完全相同，需要给 glob 匹配加上引号，这不是环境（/ shell）扩展了 glob，而是 dependency-cruiser 自己解析的：
+
 ```sh
 depcruise "packages/**/src/**/*.js"
 ```
 
-### `--output-type`: specify the output format
+### `--output-type`: specify the output format / 定义输出格式
 
 #### err
 
 For use in build scripts, in combination with `--config`. It's also
 the default reporter. Sample use:
+
+与 `--config` 结合使用。这也是默认的输出格式。例如：
 
 ```sh
 dependency-cruise --config my-depcruise-rules.json src
@@ -93,15 +123,25 @@ dependency-cruise --config my-depcruise-rules.json src
 
 This will:
 
+这将会做以下事情：
+
 - ... print nothing and exit with code 0 if dependency-cruiser didn't
   find any violations of the rules in the configuration file (e.g.
   .dependency-cruiser.js or .dependency-cruiser.json).
+
+  不打印任何内容，如果 dependency-cruiser 没有
+  在配置文件（例如
+  .dependency-cruiser.js 或 .dependency-cruiser.json）中查找任何违反规则的行为，那么 exit code 等于 0
 - ... print the violating dependencies if there is any. Moreover it
   will exit with exit code _number of violations with severity `error` found_
   in the same fashion linters and test tools do.
 
+  打印违反的依赖（如果有）。而且它的 exit code 是错误为严重程度的“错误”的违例数。与 fashion 和其他 linters 工具一样。
+
 See the _depcruise_ target in the [package.json](https://github.com/sverweij/dependency-cruiser/blob/master/package.json#L55)
 for a real world example.
+
+请参阅 [package.json](https://github.com/sverweij/dependency-cruiser/blob/master/package.json#L55) 中的 depcruise 脚本。这是个真实的例子。
 
 #### err-long
 
@@ -110,6 +150,8 @@ that went with the violated rule, so it's easier to put the rule into context
 (and if the comment contains that information: why the rule is there, and
 how to fix it). If you use dependency-cruiser in a lint-staged like setup, this
 might be a useful format,
+
+与 ʻerr` 类似，但是对于每次违规，它还会给出为什么违反这个规则的链接（如果论述中包含该信息：为什么存在该规则，以及如何解决），这样就能更容易的找到违反这条规则的代码上下文环境。如果您在类似 lint 阶段的设置中使用 dependency-cruiser，则这个可能是有用的格式。
 
 ```sh
 dependency-cruise --output-type err-long --config my-depcruise-rules.json src
@@ -120,6 +162,9 @@ dependency-cruise --output-type err-long --config my-depcruise-rules.json src
 Supplying `dot` as output type will make dependency-cruiser write
 a GraphViz dot format directed graph. Typical use is in concert
 with _GraphViz dot_ (`-T` is the short form of `--output-type`:)
+
+提供 `dot` 作为输出类型将使 dependency-cruiser 写一份 GraphViz dot 格式的有向图。通常
+_GraphViz dot_ 用于学校（-T 是 `--output-type` 的缩写形式：)
 
 ```shell
 dependency-cruise -x "^node_modules" -T dot src | dot -T svg > dependencygraph.svg
@@ -132,31 +177,49 @@ sections in the options reference for details. You can also use
 [`depcruise-wrap-stream-in-html`](#depcruise-wrap-stream-in-html) to
 make the graphs more interactive.
 
-#### ddot - summarise on folder level
+您可以自定义这些图形的外观。见 [主题](./options-reference.md#theme-dot-ddot-and-archi-reporters) 和 [摘要](./options-reference.md#summarising-collapsepattern-dot-and-archi-reporters) 部分查看详细信息。你也可以使用  [`depcruise-wrap-stream-in-html`](#depcruise-wrap-stream-in-html) 使图更具交互性。
+
+#### ddot - summarise on folder level / 在文件夹级别输出报告
 
 > This reporter is _experimental_. It's likely to stay, but the way you configure
 > it or how its output looks might change without major version bumping.
+
+> 这种输出是实验性的。它可能会保留，但是现在你可以这样配置。
+> 非主要版本的输出样式可能会发生变化。
 
 The `ddot` reporter is a variant on the `dot` output. It summarises modules on
 folder level. You can customise it with [themes](./options-reference.md#theme-dot-ddot-and-archi-reporters)
 and [filters](./options-reference.md#filtering-dot-ddot-and-archi-reporters)
 just like you can the dot reporter output.
 
+`ddot` 报告器是 `dot` 输出的变体。它的输出是文件夹级别的。您可以使用 [主题](./options-reference.md#theme-dot-ddot-and-archi-reporters) 对其进行自定义。
+和 [过滤器](./options-reference.md#filtering-dot-ddot-and-archi-reporters)，就像你输出 dot 报告一样。
+
 #### archi/ cdot
 
 > This reporter is _experimental_. It's likely to stay, but the way you configure
 > it or how its output looks might change without major version bumping.
 
+> 这种输出是实验性的。它可能会保留，但是现在你可以这样配置。
+> 非主要版本的输出样式可能会发生变化。
+
 The archi is a variant on the `dot` output. The archi reporter
 can summarise (or 'collapse') dependencies to folders of your own choosing.
 Great if you want to have a high level overview of your app's dependencies.
+
+archi 是 `dot` 输出的变体。archi 格式的报告可以总结（或“合并”）你选择的文件夹的依赖。
+如果您你想对应用程序的依赖关系有一个高层次的了解，这个方法就很适合。
 
 By default it collapses to one folder below folders named _node_modules_, _packages_,
 _src_, _lib_ and _test_, but you can pass your own patterns as well in the
 `options.reporterOptions.archi` section of your dependency-cruiser configuration.
 
+默认情况下，它会把名为 _node_modules_，_packages_，_src_，_lib_ 和 _test_ 文件夹合并到一个文件夹中，但是你也可以在 dependency-cruiser 配置的 “options.reporterOptions.archi” 部分中进行配置。
+
 See the [summarising section in the options reference](./options-reference.md#summarising-collapsepattern-dot-and-archi-reporters)
 for details.
+
+请参阅 [选项参考中的摘要部分](./options-reference.md#summarising-collapsepattern-dot-and-archi-reporters) 有关详细信息。
 
 <details>
 <summary>Sample output</summary>
@@ -169,9 +232,14 @@ for details.
 
 Generates a stand-alone html report with:
 
+生成一份单独的 html 报告文件，它包含以下内容：
+
 - a summary with files & dependencies cruised and the number of errors and warnings found
+  概述了文件和依赖项，并发现了错误和警告的数量
 - all rules, ordered by the number of violations (unviolated ones are hidden by default)
+  所有规则，按违反次数排序（默认情况下，未违反的规则被隐藏）
 - a list of all dependency and module violations, ordered by severity, rule name, from module, to module.
+  所有依赖关系和模块违规的列表，按模块之间的严重性，规则名称排序。
 
 ```shell
 dependency-cruise --validate --output-type err-html -f dependency-report.html src test configs
@@ -183,6 +251,8 @@ dependency-cruise --validate --output-type err-html -f dependency-report.html sr
 
 Write it to html with a dependency matrix instead:
 
+将依赖矩阵写入html：
+
 ```shell
 dependency-cruise -T html -f dependencies.html src
 ```
@@ -193,11 +263,18 @@ If you supply `csv` it will write the dependency matrix to a comma
 separated file - so you can import it into a spreadsheet program
 and analyse from there.
 
+如果提供`csv`，它将把依赖矩阵写入逗号分隔的文件-因此你可以将其导入电子表格程序
+并从那里进行分析。
+
 #### teamcity
 
 Write the output in [TeamCity service message format](https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html).
 
+以 [TeamCity服务消息格式](https://www.jetbrains.com/help/teamcity/build-script-interaction-with-teamcity.html) 输出。
+
 E.g. to cruise src (using the .dependency-cruiser config) and emit TeamCity messages to stdout:
+
+例如。巡航 src（使用 .dependency-cruiser 配置）并将 TeamCity 消息发送到 stdout
 
 ```shell
 dependency-cruise -v -T teamcity  -- src
@@ -222,10 +299,14 @@ dependency-cruise -v -T teamcity  -- src
 Just like the `err` reporter the TeamCity reporter has an empty output when there's
 no violations - and a non-zero exit code when there's errors.
 
+就像 `err` 输出一样，TeamCity 输出在有违规-发生错误时，退出代码为非零。
+
 #### text
 
 This reporter makes a straight, flat dump of all dependencies found in a cruise.
 Useful for grepping.
+
+这个输出对检测中发现的所有依赖项进行了直截了当的输出。对于 grepping 非常有用。
 
 ```sh
 dependency-cruise -T text --include-only src/report src/report
@@ -277,6 +358,8 @@ src/report/index.js → src/report/text.js
 ... or to find everything connected to the `meta` module, in combination with
 `grep`:
 
+或使用 `grep` 找到依赖链上有 `meta` 模块的所有内容：
+
 ```sh
 dependency-cruise -v -T text src | grep transpile/meta.js
 ```
@@ -304,7 +387,11 @@ src/extract/gather-initial-sources.js → src/extract/transpile/meta.js
 This emits the internal representation of a cruise as json. It's the input format for
 [depcruise-fmt](#depcruise-fmt), and is useful for debugging.
 
+这会以 json 形式表示成 depcruise 的内部表示。这是输入格式 [depcruise-fmt](#depcruise-fmt) 的定义，对于调试很有用。
+
 See [output-format](output-format.md) for more information
+
+有关输出格式的更多内容请看[这里](output-format.md)
 
 #### anon - obfuscated json
 
@@ -312,13 +399,19 @@ The same as json - but with all paths obfuscated. This enables you to share the 
 of a cruise for troubleshooting purposes without showing what the source code is
 about.
 
+与 json 相同 - 但所有路径均被混淆。这使你可以共享结果，告诉别人是如何检测以进行故障排除而不显示源代码是什么。
+
 To save an anonymized dependency graph to `anonymized-result.json` do this:
+
+要将匿名的依赖关系图保存到 ʻanonymized-result.json`，请执行以下操作：
 
 ```sh
 depcruise --validate --output-type anon --output-to anonymized-result.json bin src
 ```
 
 e.g. to save an anonymized graph into and svg:
+
+例如还能将匿名图表保存到 svg 中：
 
 ```sh
 depcruise --validate --output-type anon bin src | depcruise-fmt --output-type dot - | dot -T svg > anonymized_graph.svg
@@ -383,6 +476,8 @@ called `.dependency-cruiser.json` (/ `.dependency-cruiser.js`), but you can
 specify your own rules file, which can be in json format or a valid node
 module returning a rules object literal.
 
+根据配置文件中的规则列表进行验证。默认的文件名称为 `.dependency-cruiser.json` 或 `.dependency-cruiser.js`，但您可以指定您自己的规则文件，该文件可以为 json 格式或返回规则对象的 node 模块。
+
 ```shell
 dependency-cruise -x node_modules --config my.rules.json src spec
 ```
@@ -396,12 +491,22 @@ dependency-cruise -x node_modules --config my.rules.json src spec
 > dependency-cruise --config -- src
 > ```
 
+
+> _提示_：通常不需要指定规则文件。但是如果运行 `depcruise --config src`，_src_ 将被解析为规则文件。这可能不是您想要的。为了防止这种情况，请加上 “--” 在最后一个选项之后，如下所示：
+> ```
+> dependency-cruise --config -- src
+> ```
+
 The configuration specifies a bunch of regular expressions pairs your dependencies
 should adhere tom as well as configuration options that tweak what is cruised and
 how.
 
+该配置指定一堆正则表达式对您的依赖项应该遵守调整配置的选项和配置选项，并且怎么样。
+
 A simple validation configuration that forbids modules in `src` to use stuff
 in the `test` folder and allows everything else:
+
+下面是一个简单的验证配置，它禁止 src 中的模块使用在 `test` 文件夹中的东西，同时允许其他任何情况：
 
 ```json
 {
@@ -416,6 +521,8 @@ in the `test` folder and allows everything else:
 
 You can optionally specify a name and an error severity ('error', 'warn' (the
 default) and 'info') with them that will appear in some reporters:
+
+你可以指定错误名称和错误严重等级（'error', 'warn' (默认值) and 'info'），它们将出现在某些输出中：
 
 ```json
 {
@@ -434,16 +541,28 @@ For more information about writing rules see the [tutorial](rules-tutorial.md) a
 [rules-reference](rules-reference.md). For options check out the
 [options reference](options-reference.md).
 
+有关编写规则的更多信息，请参见 [tutorial](rules-tutorial.md) 和 [rules-reference](rules-reference.md)。有关选项，请查看 [选项参考](options-reference.md)。
+
 For an easy set up of both use [--init](#--init)
+
+一个更简单的方式就是用 `--init` 生成一份规则文件
 
 ### `--init`
 
 This asks some questions and - depending on the answers - creates a dependency-cruiser
 configuration with some useful rules to the current folder and exits.
 
+这会问一些问题，并且根据答案创建一份 dependency-cruiser 的配置文件在当前文件夹下，它包含一些有用的规则。
+
 The configuration file is larded with documentation to make it easy to tweak.
 
+配置文件中包含大量注释，以使其易于调整。
+
 Use `--config` to have dependency-cruiser take the configuration file into account.
+
+使用 `--config` 使 `dependency-cruiser` 使用。
+
+下面是配置文件中出现的规则和说明的表格：
 
 <details>
 <summary>Some of the rules that will be in the configuration (either directly or from a
@@ -472,6 +591,11 @@ preset):</summary>
 Which alt-js languages dependency-cruiser supports depends on the availability
 it has to them. To see how dependency-cruiser perceives its environment use
 `depcruise --info` (any arguments are ignored).
+
+dependency-cruiser 支持哪种 js 系列的语言取决于它们的可用性。查看 dependency-cruiser 检测环境的方式使用
+`depcruise --info`（忽略所有参数）。
+
+仅需要在和 `dependency-cruiser` 同级 node_modules 目录下安装指定的语言 npm 模块，就能支持了。
 
 <details>
 <summary>Typical output</summary>
@@ -514,25 +638,33 @@ Extensions:
 
 Running with no parameters gets you help.
 
-## Options also available in dependency-cruiser configurations
+## Options also available in dependency-cruiser configurations / 配置中也可使用的命令行选项
 
 Some of the `options` in dependency-cruiser configurations are also available as
 command line options. They _override_ what's in the configuration, so they're great
 if you need to quickly experiment with an option, or when you want to use one
 configuration for multiple purposes.
 
+dependency-cruiser 配置文件中的某些 “选项” 也可以作为命令行选项。他们覆盖配置中的内容，所以如果你需要快速尝试一种选择，或者想要使用一份用于多种目的的配置时，它们就很有用了。
+
 The first four options below will be of use when you want to tame the size of
 the visual representation of a big dependency graph. For the rest of the options
 you're typically best off setting in a configuration file (generate one with
 `depcruise --init`).
 
+当你想控制大依赖图的视觉输出的尺寸时，下面的前四个选项将很有用。对于其余的选项，你通常最好在配置文件中进行设置（使用 `depcruise --init`）。
+
 ### `--do-not-follow`: don't cruise modules adhering to this pattern any further
+
+输出不显示指定的正则匹配模块的依赖
 
 If you _do_ want to see certain modules in your reports, but are not interested
 in these modules' dependencies, you'd pass the regular expression for those
 modules to the `--do-not-follow` (short: `-X`) option. A typical pattern you'd
 use with this is "node_modules" (but be sure to check out the possibilities you
 have with the [`doNotFollow` option](#./options-reference.md#donotfollow-dont-cruise-modules-any-further))
+
+如果你想查看报告中的某些模块，但不感兴趣在这些模块的依赖关系中，你可以为这些模块传递正则表达式 `-do-not-follow`（简写为：`-X`）选项。典型的与此搭配使用的是 “node_modules”（但请务必检查一下带有 [`doNotFollow` option](#./options-reference.md#donotfollow-dont-cruise-modules-any-further) 的必要性）
 
 ```sh
 dependency-cruise -X "^node_modules" -T html -f deps-with-unfollowed-node_modules.html src
@@ -542,10 +674,16 @@ Details and more ways to limit dependency-cruiser from following things: check o
 the [doNotFollow](./options-reference.md#donotfollow-dont-cruise-modules-any-further)
 option in the options reference.
 
+详细信息和更多方法来限制 dependency-cruiser 可以看选项参考中的 [doNotFollow](./options-reference.md#donotfollow-dont-cruise-modules-any-further) 选项。
+
 ### `--include-only`: only include modules satisfying a pattern
+
+仅包含满足正则匹配模式的模块
 
 E.g. to only take modules into account that are in the `src` tree (and exclude all
 node_modules, core modules and modules otherwise outside it):
+
+例如。只考虑 src 树中的模块（并排除所有 node_modules，核心模块和其他模块）：
 
 ```sh
 dependency-cruise --include-only "^src" -T dot src | dot -T svg > internal-dependency-graph.svg
@@ -556,11 +694,18 @@ in the options reference for more details.
 
 ### `--focus`: show modules and their direct neighbours
 
+显示模块及其直接邻居
+
 You can use this e.g. to inspect one module or folder and see what the direct
 dependencies are and which modules are direct dependents.
 
 Takes a regular expression in the same fashion `--include-only`, `--exclude` and
 `--do-not-follow` do.
+
+你可以使用这个检查一个模块或文件夹和哪个模块是直接依赖关系。
+
+以`--include-only`，`--exclude`和
+----不要关注
 
 ```sh
 dependency-cruise --include-only "^src" --focus "^src/main" -T dot src | dot -T svg > focus-on-main-dir-graph.svg
